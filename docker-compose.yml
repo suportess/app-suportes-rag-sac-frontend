@@ -1,0 +1,25 @@
+services:
+  app-suportes-rag-sac-frontend:
+    image: ${DOCKER_USERNAME}/app-suportes-rag-sac-frontend:${IMAGE_TAG:-latest}
+    container_name: app-suportes-rag-sac-frontend
+    restart: unless-stopped
+    env_file:
+      - .env.app
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spec-validator-front.rule=Host(`spec-validator-front.suportes.tec.br`)"
+      - "traefik.http.routers.spec-validator-front.entrypoints=websecure"
+      - "traefik.http.routers.spec-validator-front.tls.certresolver=letsencrypt"
+      - "traefik.http.services.spec-validator-front.loadbalancer.server.port=3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+networks:
+  proxy:
+    external: true
