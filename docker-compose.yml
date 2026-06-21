@@ -6,6 +6,7 @@ services:
     env_file:
       - .env.app
     networks:
+      - infra-net
       - proxy
     labels:
       - "traefik.enable=true"
@@ -21,5 +22,7 @@ services:
       start_period: 15s
 
 networks:
+  infra-net:
+    external: true
   proxy:
     external: true
