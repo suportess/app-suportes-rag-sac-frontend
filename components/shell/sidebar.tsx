@@ -39,24 +39,19 @@ export function Sidebar() {
         className="flex items-center h-14 px-4 flex-shrink-0 border-b gap-3"
         style={{ borderColor: 'var(--d2b-border)' }}
       >
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{ background: 'var(--gradient-brand)' }}
-        >
-          <ShieldCheck size={18} color="#fff" />
-        </div>
         <div className="flex-1 min-w-0">
           <p
-            className="text-sm font-bold truncate"
-            style={{ color: 'var(--d2b-text-primary)' }}
+            className="font-black truncate leading-tight"
+            style={{ fontSize: '1.05rem', letterSpacing: '-0.01em', color: 'var(--d2b-text-primary)' }}
           >
-            SAP Spec Validator
+            Deloitte<span style={{ color: 'var(--brand)' }}>.</span>
           </p>
           <p
-            className="text-[10px] truncate"
+            className="text-[10px] truncate flex items-center gap-1"
             style={{ color: 'var(--d2b-text-muted)' }}
           >
-            Validador ABAP
+            <ShieldCheck size={10} style={{ color: 'var(--brand)', flexShrink: 0 }} />
+            SAP Validator
           </p>
         </div>
 

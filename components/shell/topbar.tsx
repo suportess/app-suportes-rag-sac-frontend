@@ -39,13 +39,13 @@ export function Topbar() {
             className="text-sm font-semibold truncate"
             style={{ color: 'var(--d2b-text-primary)' }}
           >
-            SAP Spec Validator
+            SAP Validator
           </h1>
           <p
             className="text-[10px] truncate hidden sm:block"
             style={{ color: 'var(--d2b-text-muted)' }}
           >
-            Validador de Especificacoes SAP ABAP
+            Validador de Especificações Funcionais
           </p>
         </div>
       </div>

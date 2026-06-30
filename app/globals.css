@@ -5,13 +5,13 @@
 
 /* ─── Design Tokens — Modo Claro (padrão) ─── */
 :root {
-  /* Brand — azul portal */
-  --brand:          #1565C0;
-  --brand-light:    #42A5F5;
-  --brand-dark:     #0D47A1;
-  --brand-muted:    rgba(21, 101, 192, 0.12);
-  --brand-border:   rgba(21, 101, 192, 0.25);
-  --brand-glow:     rgba(21, 101, 192, 0.35);
+  /* Brand — verde Deloitte */
+  --brand:          #006B3C;
+  --brand-light:    #86BC25;
+  --brand-dark:     #004D2A;
+  --brand-muted:    rgba(0, 107, 60, 0.10);
+  --brand-border:   rgba(0, 107, 60, 0.22);
+  --brand-glow:     rgba(0, 107, 60, 0.28);
 
   /* Backgrounds — Light */
   --bg-base:        #F8FAFC;
@@ -53,9 +53,9 @@
   --gradient-brand:   linear-gradient(135deg, var(--brand), var(--brand-light));
 
   /* Extras — Light */
-  --bg-subtle:            #EFF6FF;
-  --brand-border-strong:  rgba(21, 101, 192, 0.40);
-  --shadow-brand:         0 4px 20px rgba(21, 101, 192, 0.20);
+  --bg-subtle:            #F0F7F3;
+  --brand-border-strong:  rgba(0, 107, 60, 0.38);
+  --shadow-brand:         0 4px 20px rgba(0, 107, 60, 0.18);
 
   /* Aliases d2b — Light */
   --d2b-bg-main:        #F8FAFC;
@@ -106,11 +106,11 @@
 /* ─── Modo Escuro ─── */
 .dark {
   /* Backgrounds */
-  --bg-base:     #060E1A;
-  --bg-surface:  #0A1628;
-  --bg-elevated: #0D1E35;
-  --bg-card:     #112240;
-  --bg-overlay:  rgba(6, 14, 26, 0.85);
+  --bg-base:     #070D0A;
+  --bg-surface:  #0A1610;
+  --bg-elevated: #0D1C15;
+  --bg-card:     #11231A;
+  --bg-overlay:  rgba(7, 13, 10, 0.88);
 
   /* Text */
   --text-primary:   #E8F0FE;
@@ -140,27 +140,35 @@
   --purple-muted:   rgba(167, 139, 250, 0.12);
   --purple-border:  rgba(167, 139, 250, 0.30);
 
+  /* Brand — verde Deloitte (dark) */
+  --brand:          #86BC25;
+  --brand-light:    #A8D84E;
+  --brand-dark:     #6A9B1A;
+  --brand-muted:    rgba(134, 188, 37, 0.12);
+  --brand-border:   rgba(134, 188, 37, 0.22);
+  --brand-glow:     rgba(134, 188, 37, 0.30);
+
   /* Gradients */
   --gradient-success: linear-gradient(90deg, var(--success), var(--success-light));
   --gradient-brand:   linear-gradient(135deg, var(--brand), var(--brand-light));
 
   /* Extras — Dark */
-  --bg-subtle:            rgba(21, 101, 192, 0.08);
-  --brand-border-strong:  rgba(21, 101, 192, 0.45);
-  --shadow-brand:         0 4px 20px rgba(21, 101, 192, 0.30);
+  --bg-subtle:            rgba(134, 188, 37, 0.07);
+  --brand-border-strong:  rgba(134, 188, 37, 0.40);
+  --shadow-brand:         0 4px 20px rgba(134, 188, 37, 0.22);
 
   /* Aliases d2b — Dark */
-  --d2b-bg-main:        #060E1A;
-  --d2b-bg-surface:     #0A1628;
-  --d2b-bg-elevated:    #0D1E35;
-  --d2b-text-primary:   #E8F0FE;
-  --d2b-text-secondary: #90A4AE;
-  --d2b-text-muted:     #546E7A;
-  --d2b-border:         rgba(21, 101, 192, 0.20);
-  --d2b-border-strong:  rgba(21, 101, 192, 0.30);
-  --d2b-hover:          rgba(21, 101, 192, 0.10);
-  --d2b-active:         rgba(21, 101, 192, 0.15);
-  --d2b-topbar-bg:      rgba(6, 14, 26, 0.85);
+  --d2b-bg-main:        #070D0A;
+  --d2b-bg-surface:     #0A1610;
+  --d2b-bg-elevated:    #0D1C15;
+  --d2b-text-primary:   #E6F2E8;
+  --d2b-text-secondary: #8AADA0;
+  --d2b-text-muted:     #506B60;
+  --d2b-border:         rgba(134, 188, 37, 0.16);
+  --d2b-border-strong:  rgba(134, 188, 37, 0.28);
+  --d2b-hover:          rgba(134, 188, 37, 0.08);
+  --d2b-active:         rgba(134, 188, 37, 0.14);
+  --d2b-topbar-bg:      rgba(7, 13, 10, 0.88);
 
   /* shadcn overrides */
   --primary-foreground:         var(--text-primary);
@@ -226,7 +234,7 @@
   }
 
   .dark body {
-    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(21, 101, 192, 0.08) 0%, transparent 70%);
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(134, 188, 37, 0.06) 0%, transparent 70%);
   }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -234,7 +242,7 @@
   ::-webkit-scrollbar-thumb { background: var(--d2b-border-strong); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-  ::selection { background: rgba(21, 101, 192, 0.30); color: var(--text-primary); }
+  ::selection { background: rgba(0, 107, 60, 0.25); color: var(--text-primary); }
 }
 
 @layer utilities {
