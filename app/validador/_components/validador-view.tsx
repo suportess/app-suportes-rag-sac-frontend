@@ -212,7 +212,7 @@ export function ValidadorView() {
                 <span style={{ marginLeft: '0.5rem' }}>Validando...</span>
               </>
             ) : (
-              'Validar Especificacao'
+              'Validar Especificação'
             )}
           </button>
         </div>

@@ -36,21 +36,21 @@ export function Sidebar() {
     <div className="flex flex-col h-full">
       {/* Header */}
       <div
-        className="flex items-center h-14 px-4 flex-shrink-0 border-b gap-3"
+        className="flex items-end h-20 px-4 pb-3 flex-shrink-0 border-b gap-3"
         style={{ borderColor: 'var(--d2b-border)' }}
       >
         <div className="flex-1 min-w-0">
           <p
-            className="font-black truncate leading-tight"
-            style={{ fontSize: '1.05rem', letterSpacing: '-0.01em', color: 'var(--d2b-text-primary)' }}
+            className="font-black truncate leading-none"
+            style={{ fontSize: '1.80rem', letterSpacing: '-0.02em', color: 'var(--d2b-text-primary)' }}
           >
             Deloitte<span style={{ color: 'var(--brand)' }}>.</span>
           </p>
           <p
-            className="text-[10px] truncate flex items-center gap-1"
-            style={{ color: 'var(--d2b-text-muted)' }}
+            className="truncate flex items-center gap-1 mt-1.5"
+            style={{ fontSize: '0.7rem', color: 'var(--d2b-text-muted)' }}
           >
-            <ShieldCheck size={10} style={{ color: 'var(--brand)', flexShrink: 0 }} />
+            <ShieldCheck size={11} style={{ color: 'var(--brand)', flexShrink: 0 }} />
             SAP Validator
           </p>
         </div>
