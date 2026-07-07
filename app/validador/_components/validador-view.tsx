@@ -42,7 +42,7 @@ export function ValidadorView() {
 
   const handleFile = useCallback((f: File) => {
     if (!isAccepted(f)) {
-      toast.error('Formato invalido. Selecione um arquivo PDF ou DOCX.')
+      toast.error('Formato inválido. Selecione um arquivo PDF ou DOCX.')
       return
     }
     setFile(f)
@@ -96,7 +96,7 @@ export function ValidadorView() {
         file
       )
       setReport(result)
-      toast.success('Validacao concluida com sucesso!')
+      toast.success('Validação concluída com sucesso!')
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erro ao validar o documento.'
       setError(msg)
@@ -231,7 +231,7 @@ export function ValidadorView() {
         >
           <Loader2 size={40} className="animate-spin" style={{ color: 'var(--clr-brand)' }} />
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
-            Analisando especificacao... Isso pode levar ate 60 segundos.
+            Analisando especificação... Isso pode levar até 60 segundos.
           </p>
           <div className="progress-bar" style={{ width: '100%', maxWidth: 400 }}>
             <div
@@ -259,7 +259,7 @@ export function ValidadorView() {
           <div className="divider" />
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
             <CheckCircle size={24} style={{ color: 'var(--clr-success)' }} />
-            <h2 style={{ margin: 0, color: 'var(--text-primary)' }}>Relatorio de Validacao</h2>
+            <h2 style={{ margin: 0, color: 'var(--text-primary)' }}>Relatório de Validação</h2>
           </div>
           <ReportDisplay report={report} />
         </div>
