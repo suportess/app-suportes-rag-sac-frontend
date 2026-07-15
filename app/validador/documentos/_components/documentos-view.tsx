@@ -49,7 +49,7 @@ function statusLabel(status: DocumentResponse['status']): string {
     case 'UPLOADED':
       return 'Enviado'
     case 'EXTRACTED':
-      return 'Extraido'
+      return 'Extraído'
     case 'VALIDATED':
       return 'Validado'
     case 'FAILED':
@@ -93,7 +93,7 @@ export function DocumentosView() {
         const result = await api.post<ValidationReportResponse>(
           `/api/v1/documents/${id}/validate`
         )
-        toast.success('Validacao concluida!')
+        toast.success('Validação concluída!')
         router.push(`/validador/relatorio/${result.reportId}`)
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Erro ao validar documento.'
@@ -118,7 +118,7 @@ export function DocumentosView() {
     <div className="page">
       <div className="page-header">
         <h1 className="page-title">Documentos</h1>
-        <p className="page-subtitle">Lista de documentos enviados para validacao</p>
+        <p className="page-subtitle">Lista de documentos enviados para validação</p>
       </div>
 
       {/* Loading */}
@@ -167,7 +167,7 @@ export function DocumentosView() {
                   <th>Tamanho</th>
                   <th>Status</th>
                   <th>Data</th>
-                  <th>Acoes</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -251,14 +251,14 @@ export function DocumentosView() {
                 Anterior
               </button>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', padding: '0 0.5rem' }}>
-                Pagina {data.number + 1} de {data.totalPages || 1}
+                Página {data.number + 1} de {data.totalPages || 1}
               </span>
               <button
                 className="btn btn-secondary btn-sm"
                 onClick={() => setPage((p) => p + 1)}
                 disabled={page >= data.totalPages - 1}
               >
-                Proximo
+                Próximo
                 <ChevronRight size={16} />
               </button>
             </div>

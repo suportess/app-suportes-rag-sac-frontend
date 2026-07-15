@@ -27,7 +27,7 @@ export function RelatorioView({ reportId }: RelatorioViewProps) {
         )
         setReport(result)
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Erro ao carregar relatorio.'
+        const msg = err instanceof Error ? err.message : 'Erro ao carregar relatório.'
         setError(msg)
       } finally {
         setLoading(false)
@@ -47,8 +47,8 @@ export function RelatorioView({ reportId }: RelatorioViewProps) {
           <ArrowLeft size={16} />
           <span style={{ marginLeft: '0.25rem' }}>Voltar para Documentos</span>
         </button>
-        <h1 className="page-title">Relatorio de Validacao</h1>
-        <p className="page-subtitle">Relatorio #{reportId}</p>
+        <h1 className="page-title">Relatório de Validação</h1>
+        <p className="page-subtitle">Relatório #{reportId}</p>
       </div>
 
       {/* Loading */}

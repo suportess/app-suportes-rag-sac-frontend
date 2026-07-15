@@ -4,7 +4,6 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Info,
   BookOpen,
   FileText,
   MessageSquare,
@@ -69,12 +68,24 @@ function severityBadgeClass(severity: ValidationIssueResponse['severity']): stri
 function severityLabel(severity: ValidationIssueResponse['severity']): string {
   switch (severity) {
     case 'CRITICAL':
-      return 'Critico'
+      return 'Crítico'
     case 'MODERATE':
       return 'Moderado'
     case 'MINOR':
       return 'Menor'
   }
+}
+
+function categoryLabel(category: string): string {
+  const map: Record<string, string> = {
+    INTEGRACAO: 'INTEGRAÇÃO',
+    AUTORIZACAO: 'AUTORIZAÇÃO',
+    REGRA_NEGOCIO: 'REGRA DE NEGÓCIO',
+    SAP_ABAP: 'SAP ABAP',
+    TESTES: 'TESTES',
+    ESTRUTURA: 'ESTRUTURA',
+  }
+  return map[category] ?? category
 }
 
 function severityOrder(severity: ValidationIssueResponse['severity']): number {
@@ -174,7 +185,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <ListChecks size={20} style={{ color: 'var(--clr-brand)' }} />
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Cobertura de Secoes EF
+              Cobertura de Seções EF
             </h3>
             <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
               {report.sectionAnalysis.filter(s => s.status === 'PRESENTE').length}/
@@ -219,7 +230,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <BookOpen size={20} style={{ color: 'var(--clr-brand)' }} />
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Resumo da Especificacao
+              Resumo da Especificação
             </h3>
           </div>
           <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
@@ -233,7 +244,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
           <FileText size={20} style={{ color: 'var(--clr-brand)' }} />
           <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-            Resumo da Analise
+            Resumo da Análise
           </h3>
         </div>
         <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
@@ -246,7 +257,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
           <MessageSquare size={20} style={{ color: 'var(--clr-brand)' }} />
           <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-            Recomendacao Final
+            Recomendação Final
           </h3>
         </div>
         <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
@@ -268,7 +279,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
                   <span className={severityBadgeClass(issue.severity)}>
                     {severityLabel(issue.severity)}
                   </span>
-                  <span className="badge-secondary">{issue.category}</span>
+                  <span className="badge-secondary">{categoryLabel(issue.category)}</span>
                 </div>
                 <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
                   {issue.title}
@@ -286,7 +297,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
                     }}
                   >
                     <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                      <strong style={{ color: 'var(--text-primary)' }}>Sugestao:</strong>{' '}
+                      <strong style={{ color: 'var(--text-primary)' }}>Sugestão:</strong>{' '}
                       {issue.suggestion}
                     </p>
                   </div>
@@ -345,7 +356,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <AlertTriangle size={20} style={{ color: 'var(--clr-warning)' }} />
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Secoes Ausentes
+              Seções Ausentes
             </h3>
           </div>
           <ul style={{ margin: 0, paddingLeft: '1.5rem', color: 'var(--clr-warning)' }}>
@@ -364,7 +375,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <ShieldAlert size={20} style={{ color: 'var(--clr-danger)' }} />
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Analise de Riscos
+              Análise de Riscos
             </h3>
           </div>
           <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
