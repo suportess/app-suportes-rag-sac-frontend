@@ -26,34 +26,51 @@ export type SectionStatus = {
   detectedHeading?: string | null
 }
 
+export type ChecklistItemKey =
+  | 'descricao_processo'
+  | 'objetivo_escopo'
+  | 'casos_uso'
+  | 'fluxos_alternativos'
+  | 'regras_negocio'
+  | 'tratamento_excecoes'
+  | 'inputs_outputs'
+  | 'campos_estrutura_dados'
+  | 'dependencias'
+  | 'controle_acesso'
+  | 'volume_frequencia'
+  | 'logs_reprocessamento'
+  | 'mensagens_validacoes'
+  | 'condicoes_teste'
+  | 'massa_dados'
+  | 'consistencia'
+
+export type ChecklistItemResponse = {
+  chave: ChecklistItemKey
+  item: string
+  status: 'OK' | 'PARCIAL' | 'AUSENTE'
+  comentario: string
+  pontos: number
+}
+
+export type PontoCriticoResponse = {
+  gap: string
+  impacto: string
+}
+
 export type ValidationReportResponse = {
   reportId: number
   documentId: number
-  status: 'APPROVED' | 'APPROVED_WITH_WARNINGS' | 'REJECTED'
-  score: number
+  qualidade: string
+  resumoExecutivo: string
+  principaisRiscos: string[]
   specificationSummary: string | null
-  summary: string
-  finalRecommendation: string
-  issues: ValidationIssueResponse[]
-  questions: ValidationQuestionResponse[]
-  positivePoints: string[]
-  missingSections: string[]
-  riskAnalysis: string
+  checklist: ChecklistItemResponse[]
+  pontosCriticos: PontoCriticoResponse[]
+  recomendacoes: string[]
+  parecerFinal: string
+  score: number
+  classificacao: 'APROVADO' | 'ACEITAVEL' | 'REPROVADO'
   sectionAnalysis: SectionStatus[]
-}
-
-export type ValidationIssueResponse = {
-  severity: 'CRITICAL' | 'MODERATE' | 'MINOR'
-  category: string
-  title: string
-  description: string
-  suggestion: string
-}
-
-export type ValidationQuestionResponse = {
-  question: string
-  reason: string
-  targetAudience: string
 }
 
 export type PageResponse<T> = {

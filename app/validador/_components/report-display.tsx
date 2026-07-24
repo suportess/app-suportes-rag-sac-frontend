@@ -6,96 +6,126 @@ import {
   AlertTriangle,
   BookOpen,
   FileText,
-  MessageSquare,
-  HelpCircle,
-  ThumbsUp,
-  AlertOctagon,
-  ShieldAlert,
   ListChecks,
+  ClipboardCheck,
+  AlertOctagon,
+  Lightbulb,
+  Gauge,
+  Calculator,
 } from 'lucide-react'
-import type { ValidationReportResponse, ValidationIssueResponse, SectionStatus } from '@/lib/types'
+import type {
+  ValidationReportResponse,
+  ChecklistItemResponse,
+  ChecklistItemKey,
+  SectionStatus,
+} from '@/lib/types'
+
+// Nomes fixos e corretamente acentuados dos 16 itens — não depende de como a IA escreveu o
+// campo "item" na resposta (a IA pode variar grafia/acentuação entre execuções).
+const CHECKLIST_LABELS: Record<ChecklistItemKey, string> = {
+  descricao_processo: 'Descrição do processo',
+  objetivo_escopo: 'Objetivo e escopo',
+  casos_uso: 'Casos de uso principais',
+  fluxos_alternativos: 'Fluxos alternativos',
+  regras_negocio: 'Regras de negócio',
+  tratamento_excecoes: 'Tratamento de exceções',
+  inputs_outputs: 'Inputs e outputs',
+  campos_estrutura_dados: 'Campos e estrutura de dados',
+  dependencias: 'Dependências',
+  controle_acesso: 'Controle de acesso / autorizações',
+  volume_frequencia: 'Volume de dados e frequência de execução',
+  logs_reprocessamento: 'Logs, rastreabilidade e reprocessamento',
+  mensagens_validacoes: 'Mensagens e validações',
+  condicoes_teste: 'Condições de teste',
+  massa_dados: 'Massa de dados',
+  consistencia: 'Consistência',
+}
+
+const CHECKLIST_ORDER = Object.keys(CHECKLIST_LABELS) as ChecklistItemKey[]
+
+function sortedChecklist(checklist: ChecklistItemResponse[]): ChecklistItemResponse[] {
+  return [...checklist].sort(
+    (a, b) => CHECKLIST_ORDER.indexOf(a.chave) - CHECKLIST_ORDER.indexOf(b.chave)
+  )
+}
 
 function scoreColor(score: number): string {
-  if (score >= 85) return 'var(--clr-success)'
-  if (score >= 60) return 'var(--clr-warning)'
+  if (score >= 61) return 'var(--clr-success)'
+  if (score >= 40) return 'var(--clr-warning)'
   return 'var(--clr-danger)'
 }
 
-function statusLabel(status: ValidationReportResponse['status']): string {
-  switch (status) {
-    case 'APPROVED':
+function classificacaoLabel(classificacao: ValidationReportResponse['classificacao']): string {
+  switch (classificacao) {
+    case 'APROVADO':
       return 'Aprovado'
-    case 'APPROVED_WITH_WARNINGS':
+    case 'ACEITAVEL':
       return 'Aprovado com Ressalvas'
-    case 'REJECTED':
-      return 'Rejeitado'
+    case 'REPROVADO':
+      return 'Reprovado'
   }
 }
 
-function statusBadgeClass(status: ValidationReportResponse['status']): string {
-  switch (status) {
-    case 'APPROVED':
+function classificacaoBadgeClass(classificacao: ValidationReportResponse['classificacao']): string {
+  switch (classificacao) {
+    case 'APROVADO':
       return 'badge-success'
-    case 'APPROVED_WITH_WARNINGS':
+    case 'ACEITAVEL':
       return 'badge-warning'
-    case 'REJECTED':
+    case 'REPROVADO':
       return 'badge-danger'
   }
 }
 
-function StatusIcon({ status }: { status: ValidationReportResponse['status'] }) {
-  switch (status) {
-    case 'APPROVED':
+function ClassificacaoIcon({ classificacao }: { classificacao: ValidationReportResponse['classificacao'] }) {
+  switch (classificacao) {
+    case 'APROVADO':
       return <CheckCircle size={20} />
-    case 'APPROVED_WITH_WARNINGS':
+    case 'ACEITAVEL':
       return <AlertTriangle size={20} />
-    case 'REJECTED':
+    case 'REPROVADO':
       return <XCircle size={20} />
   }
 }
 
-function severityBadgeClass(severity: ValidationIssueResponse['severity']): string {
-  switch (severity) {
-    case 'CRITICAL':
-      return 'badge-danger'
-    case 'MODERATE':
+function qualidadeBadgeClass(qualidade: string): string {
+  const normalized = qualidade.trim().toLowerCase()
+  if (normalized === 'alta') return 'badge-success'
+  if (normalized === 'média' || normalized === 'media') return 'badge-warning'
+  if (normalized === 'baixa') return 'badge-danger'
+  return 'badge-secondary'
+}
+
+function checklistStatusBadgeClass(status: ChecklistItemResponse['status']): string {
+  switch (status) {
+    case 'OK':
+      return 'badge-success'
+    case 'PARCIAL':
       return 'badge-warning'
-    case 'MINOR':
-      return 'badge-info'
+    case 'AUSENTE':
+      return 'badge-danger'
   }
 }
 
-function severityLabel(severity: ValidationIssueResponse['severity']): string {
-  switch (severity) {
-    case 'CRITICAL':
-      return 'Crítico'
-    case 'MODERATE':
-      return 'Moderado'
-    case 'MINOR':
-      return 'Menor'
+function checklistStatusLabel(status: ChecklistItemResponse['status']): string {
+  switch (status) {
+    case 'OK':
+      return 'OK'
+    case 'PARCIAL':
+      return 'Parcial'
+    case 'AUSENTE':
+      return 'Ausente'
   }
 }
 
-function categoryLabel(category: string): string {
-  const map: Record<string, string> = {
-    INTEGRACAO: 'INTEGRAÇÃO',
-    AUTORIZACAO: 'AUTORIZAÇÃO',
-    REGRA_NEGOCIO: 'REGRA DE NEGÓCIO',
-    SAP_ABAP: 'SAP ABAP',
-    TESTES: 'TESTES',
-    ESTRUTURA: 'ESTRUTURA',
-  }
-  return map[category] ?? category
-}
-
-function severityOrder(severity: ValidationIssueResponse['severity']): number {
-  switch (severity) {
-    case 'CRITICAL':
-      return 0
-    case 'MODERATE':
-      return 1
-    case 'MINOR':
-      return 2
+function ChecklistStatusIcon({ status }: { status: ChecklistItemResponse['status'] }) {
+  switch (status) {
+    case 'OK':
+      return <CheckCircle size={16} style={{ color: 'var(--clr-success)', flexShrink: 0 }} />
+    case 'PARCIAL':
+      return <AlertTriangle size={16} style={{ color: 'var(--clr-warning)', flexShrink: 0 }} />
+    case 'AUSENTE':
+      return <XCircle size={16} style={{ color: 'var(--clr-danger)', flexShrink: 0 }} />
   }
 }
 
@@ -121,18 +151,65 @@ function SectionStatusIcon({ status }: { status: SectionStatus['status'] }) {
   }
 }
 
+function valorColor(pontos: number): string {
+  if (pontos === 0) return 'var(--text-muted)'
+  return 'var(--clr-danger)'
+}
+
+function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse[]; score: number }) {
+  return (
+    <div className="card card-p">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+        <Calculator size={20} style={{ color: 'var(--clr-brand)' }} />
+        <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+          Demonstrativo do Cálculo de Score
+        </h3>
+      </div>
+      <div className="data-table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Status</th>
+              <th style={{ textAlign: 'right' }}>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {checklist.map((item) => (
+              <tr key={item.chave}>
+                <td style={{ color: 'var(--text-primary)' }}>{CHECKLIST_LABELS[item.chave]}</td>
+                <td>
+                  <span className={checklistStatusBadgeClass(item.status)}>
+                    {checklistStatusLabel(item.status)}
+                  </span>
+                </td>
+                <td style={{ textAlign: 'right', fontWeight: 600, color: valorColor(item.pontos) }}>
+                  {item.pontos === 0 ? '0' : item.pontos}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="table-footer" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span>Base: 100</span>
+          <span style={{ fontWeight: 700, color: scoreColor(score) }}>Total: {score}/100</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 type ReportDisplayProps = {
   report: ValidationReportResponse
 }
 
 export function ReportDisplay({ report }: ReportDisplayProps) {
-  const sortedIssues = [...report.issues].sort(
-    (a, b) => severityOrder(a.severity) - severityOrder(b.severity)
-  )
+  const checklist = sortedChecklist(report.checklist)
+  const okCount = checklist.filter((item) => item.status === 'OK').length
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* KPI Row */}
+      {/* KPI Row — Score automático (seção 5) */}
       <div
         style={{
           display: 'grid',
@@ -142,44 +219,46 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
       >
         <div className="kpi-card">
           <div className="kpi-icon" style={{ color: scoreColor(report.score) }}>
-            <ListChecks size={24} />
+            <Gauge size={24} />
           </div>
           <div className="kpi-value" style={{ color: scoreColor(report.score) }}>
-            {report.score}
+            {report.score}/100
           </div>
           <div className="kpi-label">Score</div>
         </div>
 
         <div className="kpi-card">
           <div className="kpi-icon">
-            <StatusIcon status={report.status} />
+            <ClassificacaoIcon classificacao={report.classificacao} />
           </div>
           <div className="kpi-value">
-            <span className={statusBadgeClass(report.status)}>
-              {statusLabel(report.status)}
+            <span className={classificacaoBadgeClass(report.classificacao)}>
+              {classificacaoLabel(report.classificacao)}
             </span>
           </div>
-          <div className="kpi-label">Status</div>
+          <div className="kpi-label">Classificação</div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-icon">
+            <span className={qualidadeBadgeClass(report.qualidade)}>{report.qualidade}</span>
+          </div>
+          <div className="kpi-value">{okCount}/{checklist.length}</div>
+          <div className="kpi-label">Itens OK no checklist</div>
         </div>
 
         <div className="kpi-card">
           <div className="kpi-icon" style={{ color: 'var(--clr-danger)' }}>
             <AlertOctagon size={24} />
           </div>
-          <div className="kpi-value">{report.issues.length}</div>
-          <div className="kpi-label">Problemas</div>
-        </div>
-
-        <div className="kpi-card">
-          <div className="kpi-icon" style={{ color: 'var(--clr-info)' }}>
-            <HelpCircle size={24} />
-          </div>
-          <div className="kpi-value">{report.questions.length}</div>
-          <div className="kpi-label">Perguntas</div>
+          <div className="kpi-value">{report.pontosCriticos.length}</div>
+          <div className="kpi-label">Pontos Críticos</div>
         </div>
       </div>
 
-      {/* Section Coverage */}
+      <ScoreBreakdown checklist={checklist} score={report.score} />
+
+      {/* Section Coverage (analise determinística de 12 seções, independente do checklist da IA) */}
       {report.sectionAnalysis && report.sectionAnalysis.length > 0 && (
         <div className="card card-p">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
@@ -188,7 +267,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
               Cobertura de Seções EF
             </h3>
             <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              {report.sectionAnalysis.filter(s => s.status === 'PRESENTE').length}/
+              {report.sectionAnalysis.filter((s) => s.status === 'PRESENTE').length}/
               {report.sectionAnalysis.length} presentes
             </span>
           </div>
@@ -224,6 +303,31 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
         </div>
       )}
 
+      {/* 1. Análise Geral */}
+      <div className="card card-p">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <FileText size={20} style={{ color: 'var(--clr-brand)' }} />
+          <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+            Análise Geral
+          </h3>
+        </div>
+        <p style={{ margin: '0 0 0.75rem 0', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+          {report.resumoExecutivo}
+        </p>
+        {report.principaisRiscos.length > 0 && (
+          <>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.875rem' }}>Principais riscos:</strong>
+            <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1.5rem' }}>
+              {report.principaisRiscos.map((risco, i) => (
+                <li key={i} style={{ marginBottom: '0.35rem', color: 'var(--text-secondary)' }}>
+                  {risco}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+
       {/* Specification Summary */}
       {report.specificationSummary && (
         <div className="card card-p">
@@ -239,147 +343,91 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
         </div>
       )}
 
-      {/* Summary */}
-      <div className="card card-p">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <FileText size={20} style={{ color: 'var(--clr-brand)' }} />
-          <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-            Resumo da Análise
-          </h3>
-        </div>
-        <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-          {report.summary}
-        </p>
-      </div>
-
-      {/* Final Recommendation */}
-      <div className="card card-p">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <MessageSquare size={20} style={{ color: 'var(--clr-brand)' }} />
-          <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-            Recomendação Final
-          </h3>
-        </div>
-        <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-          {report.finalRecommendation}
-        </p>
-      </div>
-
-      {/* Issues */}
-      {sortedIssues.length > 0 && (
+      {/* 2. Checklist de Validação */}
+      {checklist.length > 0 && (
         <div>
           <h3 style={{ color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <AlertTriangle size={20} style={{ color: 'var(--clr-danger)' }} />
-            Problemas Encontrados ({sortedIssues.length})
+            <ClipboardCheck size={20} style={{ color: 'var(--clr-brand)' }} />
+            Checklist de Validação ({okCount}/{checklist.length} OK)
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {sortedIssues.map((issue, i) => (
-              <div key={i} className="card card-p">
-                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                  <span className={severityBadgeClass(issue.severity)}>
-                    {severityLabel(issue.severity)}
+            {checklist.map((item) => (
+              <div key={item.chave} className="card card-p">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                  <ChecklistStatusIcon status={item.status} />
+                  <h4 style={{ margin: 0, color: 'var(--text-primary)', flex: 1 }}>{CHECKLIST_LABELS[item.chave]}</h4>
+                  <span className={checklistStatusBadgeClass(item.status)}>
+                    {checklistStatusLabel(item.status)}
                   </span>
-                  <span className="badge-secondary">{categoryLabel(issue.category)}</span>
                 </div>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
-                  {issue.title}
-                </h4>
-                <p style={{ margin: '0 0 0.75rem 0', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  {issue.description}
+                <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  {item.comentario}
                 </p>
-                {issue.suggestion && (
-                  <div
-                    style={{
-                      padding: '0.75rem 1rem',
-                      borderRadius: '0.5rem',
-                      backgroundColor: 'var(--bg-muted)',
-                      borderLeft: '3px solid var(--clr-brand)',
-                    }}
-                  >
-                    <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                      <strong style={{ color: 'var(--text-primary)' }}>Sugestão:</strong>{' '}
-                      {issue.suggestion}
-                    </p>
-                  </div>
-                )}
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Questions */}
-      {report.questions.length > 0 && (
+      {/* 3. Pontos Críticos */}
+      {report.pontosCriticos.length > 0 && (
         <div>
           <h3 style={{ color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <HelpCircle size={20} style={{ color: 'var(--clr-info)' }} />
-            Perguntas para Esclarecimento ({report.questions.length})
+            <AlertOctagon size={20} style={{ color: 'var(--clr-danger)' }} />
+            Pontos Críticos ({report.pontosCriticos.length})
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {report.questions.map((q, i) => (
+            {report.pontosCriticos.map((ponto, i) => (
               <div key={i} className="card card-p">
-                <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
-                  {q.question}
-                </h4>
-                <p style={{ margin: '0 0 0.5rem 0', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  {q.reason}
-                </p>
-                <span className="badge-secondary">{q.targetAudience}</span>
+                <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>{ponto.gap}</h4>
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '0.5rem',
+                    backgroundColor: 'var(--bg-muted)',
+                    borderLeft: '3px solid var(--clr-danger)',
+                  }}
+                >
+                  <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    <strong style={{ color: 'var(--text-primary)' }}>Impacto:</strong> {ponto.impacto}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Positive Points */}
-      {report.positivePoints.length > 0 && (
+      {/* 4. Recomendações */}
+      {report.recomendacoes.length > 0 && (
         <div className="card card-p">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <ThumbsUp size={20} style={{ color: 'var(--clr-success)' }} />
+            <Lightbulb size={20} style={{ color: 'var(--clr-brand)' }} />
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Pontos Positivos
+              Recomendações
             </h3>
           </div>
-          <ul style={{ margin: 0, paddingLeft: '1.5rem', color: 'var(--clr-success)' }}>
-            {report.positivePoints.map((point, i) => (
-              <li key={i} style={{ marginBottom: '0.35rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{point}</span>
+          <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+            {report.recomendacoes.map((rec, i) => (
+              <li key={i} style={{ marginBottom: '0.35rem', color: 'var(--text-secondary)' }}>
+                {rec}
               </li>
             ))}
           </ul>
         </div>
       )}
 
-      {/* Missing Sections */}
-      {report.missingSections.length > 0 && (
+      {/* 6. Parecer Final */}
+      {report.parecerFinal && (
         <div className="card card-p">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <AlertTriangle size={20} style={{ color: 'var(--clr-warning)' }} />
+            <FileText size={20} style={{ color: 'var(--clr-brand)' }} />
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Seções Ausentes
-            </h3>
-          </div>
-          <ul style={{ margin: 0, paddingLeft: '1.5rem', color: 'var(--clr-warning)' }}>
-            {report.missingSections.map((section, i) => (
-              <li key={i} style={{ marginBottom: '0.35rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{section}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Risk Analysis */}
-      {report.riskAnalysis && (
-        <div className="card card-p">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <ShieldAlert size={20} style={{ color: 'var(--clr-danger)' }} />
-            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-              Análise de Riscos
+              Parecer Final
             </h3>
           </div>
           <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-            {report.riskAnalysis}
+            {report.parecerFinal}
           </p>
         </div>
       )}
