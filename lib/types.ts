@@ -42,7 +42,6 @@ export type ChecklistItemKey =
   | 'mensagens_validacoes'
   | 'condicoes_teste'
   | 'massa_dados'
-  | 'consistencia'
 
 export type ChecklistItemResponse = {
   chave: ChecklistItemKey

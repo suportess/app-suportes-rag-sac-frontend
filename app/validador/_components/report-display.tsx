@@ -20,8 +20,11 @@ import type {
   SectionStatus,
 } from '@/lib/types'
 
-// Nomes fixos e corretamente acentuados dos 16 itens — não depende de como a IA escreveu o
-// campo "item" na resposta (a IA pode variar grafia/acentuação entre execuções).
+// Nomes fixos e corretamente acentuados dos itens do checklist — não depende de como a IA
+// escreveu o campo "item" na resposta (a IA pode variar grafia/acentuação entre execuções).
+// A quantidade de itens que realmente aparece varia por EF (alguns são condicionais por tipo
+// de desenvolvimento — ver ScoreCalculator/PromptBuilderService no backend); "consistência"
+// não é mais um item pontuado, virou regra transversal aplicada a todos os outros no prompt.
 const CHECKLIST_LABELS: Record<ChecklistItemKey, string> = {
   descricao_processo: 'Descrição do processo',
   objetivo_escopo: 'Objetivo e escopo',
@@ -38,7 +41,6 @@ const CHECKLIST_LABELS: Record<ChecklistItemKey, string> = {
   mensagens_validacoes: 'Mensagens e validações',
   condicoes_teste: 'Condições de teste',
   massa_dados: 'Massa de dados',
-  consistencia: 'Consistência',
 }
 
 const CHECKLIST_ORDER = Object.keys(CHECKLIST_LABELS) as ChecklistItemKey[]
