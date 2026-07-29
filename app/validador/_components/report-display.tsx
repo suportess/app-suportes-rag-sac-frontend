@@ -194,28 +194,22 @@ function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse
           </thead>
           <tbody>
             {checklist.map((item) => (
-              <tr key={item.chave} style={!item.aplicavel ? { opacity: 0.45 } : undefined}>
+              <tr key={item.chave} style={!item.aplicavel ? { opacity: 0.5 } : undefined}>
                 <td style={{ color: 'var(--text-primary)' }}>{CHECKLIST_LABELS[item.chave]}</td>
                 <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{item.peso}</td>
                 <td>
-                  {item.aplicavel ? (
-                    <span className={checklistStatusBadgeClass(item.status)}>
-                      {checklistStatusLabel(item.status)}
-                    </span>
-                  ) : (
-                    <span className="badge badge-neutral">N/A</span>
-                  )}
+                  <span className={checklistStatusBadgeClass(item.status)}>
+                    {checklistStatusLabel(item.status)}
+                  </span>
                 </td>
                 <td
                   style={{
                     textAlign: 'right',
                     fontWeight: 600,
-                    color: item.aplicavel
-                      ? conquistadoColor(item.pontosConquistados, item.peso)
-                      : 'var(--text-muted)',
+                    color: conquistadoColor(item.pontosConquistados, item.peso),
                   }}
                 >
-                  {item.aplicavel ? `${formatNumero(item.pontosConquistados)} / ${item.peso}` : '—'}
+                  {formatNumero(item.pontosConquistados)} / {item.peso}
                 </td>
               </tr>
             ))}
@@ -385,17 +379,13 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {checklist.map((item) => (
-              <div key={item.chave} className="card card-p" style={!item.aplicavel ? { opacity: 0.45 } : undefined}>
+              <div key={item.chave} className="card card-p" style={!item.aplicavel ? { opacity: 0.5 } : undefined}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                   <ChecklistStatusIcon status={item.status} />
                   <h4 style={{ margin: 0, color: 'var(--text-primary)', flex: 1 }}>{CHECKLIST_LABELS[item.chave]}</h4>
-                  {item.aplicavel ? (
-                    <span className={checklistStatusBadgeClass(item.status)}>
-                      {checklistStatusLabel(item.status)}
-                    </span>
-                  ) : (
-                    <span className="badge badge-neutral">N/A</span>
-                  )}
+                  <span className={checklistStatusBadgeClass(item.status)}>
+                    {checklistStatusLabel(item.status)}
+                  </span>
                 </div>
                 <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   {item.comentario}
