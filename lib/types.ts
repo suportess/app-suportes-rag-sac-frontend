@@ -51,6 +51,7 @@ export type ChecklistItemResponse = {
   pontos: number
   peso: number
   pontosConquistados: number
+  aplicavel: boolean
 }
 
 export type PontoCriticoResponse = {

@@ -165,8 +165,9 @@ function formatNumero(valor: number): string {
 }
 
 function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse[]; score: number }) {
-  const possivel = checklist.reduce((soma, item) => soma + item.peso, 0)
-  const conquistado = checklist.reduce((soma, item) => soma + item.pontosConquistados, 0)
+  const aplicaveis = checklist.filter((i) => i.aplicavel)
+  const possivel = aplicaveis.reduce((soma, item) => soma + item.peso, 0)
+  const conquistado = aplicaveis.reduce((soma, item) => soma + item.pontosConquistados, 0)
 
   return (
     <div className="card card-p">
@@ -179,6 +180,7 @@ function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse
       <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
         Cada critério tem um peso (definido pelo negócio). OK garante o peso cheio, Parcial garante metade,
         Ausente não garante nada. O score é a soma conquistada dividida pela soma possível.
+        Critérios marcados como N/A não se aplicam ao tipo de desenvolvimento detectado e não entram no cálculo.
       </p>
       <div className="data-table-wrap">
         <table className="data-table">
@@ -192,22 +194,28 @@ function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse
           </thead>
           <tbody>
             {checklist.map((item) => (
-              <tr key={item.chave}>
+              <tr key={item.chave} style={!item.aplicavel ? { opacity: 0.45 } : undefined}>
                 <td style={{ color: 'var(--text-primary)' }}>{CHECKLIST_LABELS[item.chave]}</td>
                 <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{item.peso}</td>
                 <td>
-                  <span className={checklistStatusBadgeClass(item.status)}>
-                    {checklistStatusLabel(item.status)}
-                  </span>
+                  {item.aplicavel ? (
+                    <span className={checklistStatusBadgeClass(item.status)}>
+                      {checklistStatusLabel(item.status)}
+                    </span>
+                  ) : (
+                    <span className="badge badge-neutral">N/A</span>
+                  )}
                 </td>
                 <td
                   style={{
                     textAlign: 'right',
                     fontWeight: 600,
-                    color: conquistadoColor(item.pontosConquistados, item.peso),
+                    color: item.aplicavel
+                      ? conquistadoColor(item.pontosConquistados, item.peso)
+                      : 'var(--text-muted)',
                   }}
                 >
-                  {formatNumero(item.pontosConquistados)} / {item.peso}
+                  {item.aplicavel ? `${formatNumero(item.pontosConquistados)} / ${item.peso}` : '—'}
                 </td>
               </tr>
             ))}
@@ -230,7 +238,7 @@ type ReportDisplayProps = {
 
 export function ReportDisplay({ report }: ReportDisplayProps) {
   const checklist = sortedChecklist(report.checklist)
-  const okCount = checklist.filter((item) => item.status === 'OK').length
+  const okCount = checklist.filter((item) => item.aplicavel && item.status === 'OK').length
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -373,17 +381,21 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
         <div>
           <h3 style={{ color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ClipboardCheck size={20} style={{ color: 'var(--clr-brand)' }} />
-            Checklist de Validação ({okCount}/{checklist.length} OK)
+            Checklist de Validação ({okCount}/{checklist.filter((i) => i.aplicavel).length} OK)
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {checklist.map((item) => (
-              <div key={item.chave} className="card card-p">
+              <div key={item.chave} className="card card-p" style={!item.aplicavel ? { opacity: 0.45 } : undefined}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                   <ChecklistStatusIcon status={item.status} />
                   <h4 style={{ margin: 0, color: 'var(--text-primary)', flex: 1 }}>{CHECKLIST_LABELS[item.chave]}</h4>
-                  <span className={checklistStatusBadgeClass(item.status)}>
-                    {checklistStatusLabel(item.status)}
-                  </span>
+                  {item.aplicavel ? (
+                    <span className={checklistStatusBadgeClass(item.status)}>
+                      {checklistStatusLabel(item.status)}
+                    </span>
+                  ) : (
+                    <span className="badge badge-neutral">N/A</span>
+                  )}
                 </div>
                 <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   {item.comentario}
