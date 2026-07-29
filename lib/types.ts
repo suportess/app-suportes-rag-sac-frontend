@@ -49,6 +49,8 @@ export type ChecklistItemResponse = {
   status: 'OK' | 'PARCIAL' | 'AUSENTE'
   comentario: string
   pontos: number
+  peso: number
+  pontosConquistados: number
 }
 
 export type PontoCriticoResponse = {

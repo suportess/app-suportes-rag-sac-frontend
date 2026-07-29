@@ -153,12 +153,21 @@ function SectionStatusIcon({ status }: { status: SectionStatus['status'] }) {
   }
 }
 
-function valorColor(pontos: number): string {
-  if (pontos === 0) return 'var(--text-muted)'
-  return 'var(--clr-danger)'
+function conquistadoColor(pontosConquistados: number, peso: number): string {
+  if (pontosConquistados >= peso) return 'var(--clr-success)'
+  if (pontosConquistados === 0) return 'var(--clr-danger)'
+  return 'var(--clr-warning)'
+}
+
+// Sem decimal quando for numero inteiro (ex: "5"), com 1 casa quando for fracao (ex: "1.5").
+function formatNumero(valor: number): string {
+  return Number.isInteger(valor) ? String(valor) : valor.toFixed(1)
 }
 
 function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse[]; score: number }) {
+  const possivel = checklist.reduce((soma, item) => soma + item.peso, 0)
+  const conquistado = checklist.reduce((soma, item) => soma + item.pontosConquistados, 0)
+
   return (
     <div className="card card-p">
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
@@ -167,34 +176,48 @@ function ScoreBreakdown({ checklist, score }: { checklist: ChecklistItemResponse
           Demonstrativo do Cálculo de Score
         </h3>
       </div>
+      <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+        Cada critério tem um peso (definido pelo negócio). OK garante o peso cheio, Parcial garante metade,
+        Ausente não garante nada. O score é a soma conquistada dividida pela soma possível.
+      </p>
       <div className="data-table-wrap">
         <table className="data-table">
           <thead>
             <tr>
               <th>Item</th>
+              <th style={{ textAlign: 'right' }}>Peso</th>
               <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Valor</th>
+              <th style={{ textAlign: 'right' }}>Pontos</th>
             </tr>
           </thead>
           <tbody>
             {checklist.map((item) => (
               <tr key={item.chave}>
                 <td style={{ color: 'var(--text-primary)' }}>{CHECKLIST_LABELS[item.chave]}</td>
+                <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{item.peso}</td>
                 <td>
                   <span className={checklistStatusBadgeClass(item.status)}>
                     {checklistStatusLabel(item.status)}
                   </span>
                 </td>
-                <td style={{ textAlign: 'right', fontWeight: 600, color: valorColor(item.pontos) }}>
-                  {item.pontos === 0 ? '0' : item.pontos}
+                <td
+                  style={{
+                    textAlign: 'right',
+                    fontWeight: 600,
+                    color: conquistadoColor(item.pontosConquistados, item.peso),
+                  }}
+                >
+                  {formatNumero(item.pontosConquistados)} / {item.peso}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
         <div className="table-footer" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span>Base: 100</span>
-          <span style={{ fontWeight: 700, color: scoreColor(score) }}>Total: {score}/100</span>
+          <span>
+            Total: {formatNumero(conquistado)} / {formatNumero(possivel)} pontos
+          </span>
+          <span style={{ fontWeight: 700, color: scoreColor(score) }}>Score: {score}/100</span>
         </div>
       </div>
     </div>
