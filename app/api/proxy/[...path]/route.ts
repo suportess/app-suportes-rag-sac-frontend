@@ -41,9 +41,10 @@ function forwardHeaders(req: NextRequest): Record<string, string> {
 
 async function pipe(res: Response): Promise<NextResponse> {
   const contentType = res.headers.get('content-type') || 'application/json'
+  const headers: Record<string, string> = { 'Content-Type': contentType }
+  const disposition = res.headers.get('content-disposition')
+  if (disposition) headers['Content-Disposition'] = disposition
+
   const body = await res.arrayBuffer()
-  return new NextResponse(body, {
-    status: res.status,
-    headers: { 'Content-Type': contentType },
-  })
+  return new NextResponse(body, { status: res.status, headers })
 }

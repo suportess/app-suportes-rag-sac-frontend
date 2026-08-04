@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   PlayCircle,
+  Download,
   Inbox,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -204,22 +205,33 @@ export function DocumentosView() {
                     </td>
                     <td style={{ whiteSpace: 'nowrap' }}>{formatDate(doc.createdAt)}</td>
                     <td>
-                      {(doc.status === 'UPLOADED' || doc.status === 'EXTRACTED') && (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={(e) => handleValidate(doc.id, e)}
-                          disabled={validatingId === doc.id}
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        {(doc.status === 'UPLOADED' || doc.status === 'EXTRACTED') && (
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={(e) => handleValidate(doc.id, e)}
+                            disabled={validatingId === doc.id}
+                          >
+                            {validatingId === doc.id ? (
+                              <Loader2 size={14} className="animate-spin" />
+                            ) : (
+                              <>
+                                <PlayCircle size={14} />
+                                <span style={{ marginLeft: '0.25rem' }}>Validar</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                        <a
+                          className="btn btn-secondary btn-sm"
+                          href={`/api/proxy/api/v1/documents/${doc.id}/download`}
+                          download={doc.originalFileName}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {validatingId === doc.id ? (
-                            <Loader2 size={14} className="animate-spin" />
-                          ) : (
-                            <>
-                              <PlayCircle size={14} />
-                              <span style={{ marginLeft: '0.25rem' }}>Validar</span>
-                            </>
-                          )}
-                        </button>
-                      )}
+                          <Download size={14} />
+                          <span style={{ marginLeft: '0.25rem' }}>Baixar</span>
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 ))}
