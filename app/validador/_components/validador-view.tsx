@@ -218,6 +218,13 @@ export function ValidadorView() {
         </div>
       </div>
 
+      <div className="card-disclaimer">
+        <p className="title-disclaimer">Aviso Importante!</p>
+        <p className="text-disclaimer">
+          Não utilizar documentos que contenham dados reais do cliente.
+        </p>
+      </div>
+
       {/* Loading state */}
       {loading && (
         <div

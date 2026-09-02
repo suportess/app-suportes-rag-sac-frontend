@@ -319,6 +319,45 @@
     padding: 1.25rem;
   }
 
+  .card-disclaimer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.35rem;
+    width: min(92vw, 680px);
+    max-width: 680px;
+    align-self: center;
+    margin: 1rem auto 0;
+    padding: 1rem 1.15rem;
+    border: 1px solid color-mix(in srgb, var(--warning-light) 55%, transparent);
+    border-left: 5px solid var(--warning-light);
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, rgba(252, 211, 77, 0.26), rgba(245, 158, 11, 0.08));
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.26);
+  }
+
+  .title-disclaimer {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.015em;
+    color: var(--warning-light);
+  }
+
+  .text-disclaimer {
+    margin: 0;
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  .dark .card-disclaimer {
+    background: linear-gradient(135deg, rgba(252, 211, 77, 0.26), rgba(245, 158, 11, 0.1));
+    box-shadow: 0 6px 20px rgba(252, 211, 77, 0.28);
+  }
+
   /* ── Section label ── */
   .section-label {
     display: flex;
