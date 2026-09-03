@@ -30,9 +30,18 @@ export const api = {
             : undefined,
     }),
 
-  upload: <T>(path: string, file: File) => {
+  upload: <T>(path: string, file: File, documentosComplementares?: File | File[]) => {
     const form = new FormData()
-    form.append('file', file)
+    const documentos = Array.isArray(documentosComplementares)
+      ? documentosComplementares
+      : documentosComplementares
+        ? [documentosComplementares]
+        : []
+
+    form.append('EF', file)
+    documentos.forEach((documento) => {
+      form.append('documentosComplementares', documento)
+    })
     return request<T>(path, { method: 'POST', body: form })
   },
 }
