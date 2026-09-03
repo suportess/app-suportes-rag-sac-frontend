@@ -51,7 +51,7 @@ export function Sidebar() {
             style={{ fontSize: '0.7rem', color: 'var(--d2b-text-muted)' }}
           >
             <ShieldCheck size={11} style={{ color: 'var(--brand)', flexShrink: 0 }} />
-            SAP Validator
+            EF Quality Check
           </p>
         </div>
 

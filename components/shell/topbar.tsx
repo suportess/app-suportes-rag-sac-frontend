@@ -39,7 +39,7 @@ export function Topbar() {
             className="text-sm font-semibold truncate"
             style={{ color: 'var(--d2b-text-primary)' }}
           >
-            SAP Validator
+            EF Quality Check
           </h1>
           <p
             className="text-[10px] truncate hidden sm:block"
