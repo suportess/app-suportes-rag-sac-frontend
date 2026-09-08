@@ -1,3 +1,5 @@
+export type DocumentRole = 'EF' | 'COMPLEMENTARY'
+
 export type DocumentUploadResponse = {
   id: number
   originalFileName: string
@@ -5,6 +7,8 @@ export type DocumentUploadResponse = {
   documentType: 'PDF' | 'DOCX' | 'TXT' | 'UNKNOWN'
   fileSize: number
   status: 'UPLOADED' | 'EXTRACTED' | 'VALIDATED' | 'FAILED'
+  projectCode?: string | null
+  documentRole?: DocumentRole
   createdAt: string
 }
 
@@ -16,6 +20,8 @@ export type DocumentResponse = {
   documentType: 'PDF' | 'DOCX' | 'TXT' | 'UNKNOWN'
   fileSize: number
   status: 'UPLOADED' | 'EXTRACTED' | 'VALIDATED' | 'FAILED'
+  projectCode?: string | null
+  documentRole?: DocumentRole
   createdAt: string
   updatedAt: string
 }

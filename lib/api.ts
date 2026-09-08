@@ -1,5 +1,11 @@
 const BASE_URL = '/api/proxy'
 
+type UploadOptions = {
+  documentosComplementares?: File | File[]
+  complementaryDocumentIds?: number[]
+  projectCode?: string
+}
+
 async function request<T>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     ...opts,
@@ -30,15 +36,30 @@ export const api = {
             : undefined,
     }),
 
-  upload: <T>(path: string, file: File, documentosComplementares?: File | File[]) => {
+  upload: <T>(path: string, efFile: File, payload?: File | File[] | UploadOptions) => {
     const form = new FormData()
-    const documentos = Array.isArray(documentosComplementares)
-      ? documentosComplementares
-      : documentosComplementares
-        ? [documentosComplementares]
+
+    const normalized: UploadOptions =
+      payload instanceof File || Array.isArray(payload)
+        ? { documentosComplementares: payload as File | File[] }
+        : (payload ?? {})
+
+    const documentos = Array.isArray(normalized.documentosComplementares)
+      ? normalized.documentosComplementares
+      : normalized.documentosComplementares
+        ? [normalized.documentosComplementares]
         : []
 
-    form.append('EF', file)
+    form.append('EF', efFile)
+
+    if (normalized.projectCode?.trim()) {
+      form.append('projectCode', normalized.projectCode.trim())
+    }
+
+    normalized.complementaryDocumentIds?.forEach((id) => {
+      form.append('complementaryDocumentIds', String(id))
+    })
+
     documentos.forEach((documento) => {
       form.append('documentosComplementares', documento)
     })
