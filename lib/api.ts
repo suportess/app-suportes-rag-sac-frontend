@@ -1,4 +1,11 @@
+import type { DocumentUploadResponse } from './types'
+
 const BASE_URL = '/api/proxy'
+
+type UploadOptions = {
+  complementaryDocumentIds?: number[]
+  projectCode?: string
+}
 
 async function request<T>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -30,9 +37,30 @@ export const api = {
             : undefined,
     }),
 
-  upload: <T>(path: string, file: File) => {
+  upload: <T>(path: string, efFile: File, options?: UploadOptions) => {
+    const form = new FormData()
+    form.append('EF', efFile)
+
+    if (options?.projectCode?.trim()) {
+      form.append('projectCode', options.projectCode.trim())
+    }
+
+    options?.complementaryDocumentIds?.forEach((id) => {
+      form.append('complementaryDocumentIds', String(id))
+    })
+
+    return request<T>(path, { method: 'POST', body: form })
+  },
+
+  uploadComplementary: (file: File, projectCode?: string) => {
     const form = new FormData()
     form.append('file', file)
-    return request<T>(path, { method: 'POST', body: form })
+    if (projectCode?.trim()) {
+      form.append('projectCode', projectCode.trim())
+    }
+    return request<DocumentUploadResponse>('/api/v1/documents/complementary-documents', {
+      method: 'POST',
+      body: form,
+    })
   },
 }

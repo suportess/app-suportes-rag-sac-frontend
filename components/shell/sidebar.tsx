@@ -51,7 +51,7 @@ export function Sidebar() {
             style={{ fontSize: '0.7rem', color: 'var(--d2b-text-muted)' }}
           >
             <ShieldCheck size={11} style={{ color: 'var(--brand)', flexShrink: 0 }} />
-            SAP Validator
+            EF Quality Check
           </p>
         </div>
 
@@ -149,7 +149,7 @@ export function Sidebar() {
       <aside
         className="hidden md:flex flex-col flex-shrink-0 h-screen border-r fixed left-0 top-0 z-30"
         style={{
-          width: '15rem',
+          width: '13.5rem',
           background: 'var(--d2b-bg-surface)',
           borderColor: 'var(--d2b-border)',
         }}
@@ -172,7 +172,7 @@ export function Sidebar() {
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{
-          width: '15rem',
+          width: '13.5rem',
           background: 'var(--d2b-bg-surface)',
           borderRight: '1px solid var(--d2b-border)',
         }}

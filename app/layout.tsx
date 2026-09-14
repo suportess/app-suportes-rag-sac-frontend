@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'SAP Validator',
-  description: 'Validador de Especificações Funcionais SAP',
+  title: 'EF Quality Check',
+  description: 'Validador de Especificações Funcionais',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

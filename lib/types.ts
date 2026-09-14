@@ -1,3 +1,5 @@
+export type DocumentRole = 'EF' | 'COMPLEMENTARY'
+
 export type DocumentUploadResponse = {
   id: number
   originalFileName: string
@@ -5,6 +7,8 @@ export type DocumentUploadResponse = {
   documentType: 'PDF' | 'DOCX' | 'TXT' | 'UNKNOWN'
   fileSize: number
   status: 'UPLOADED' | 'EXTRACTED' | 'VALIDATED' | 'FAILED'
+  projectCode?: string | null
+  documentRole?: DocumentRole
   createdAt: string
 }
 
@@ -16,6 +20,8 @@ export type DocumentResponse = {
   documentType: 'PDF' | 'DOCX' | 'TXT' | 'UNKNOWN'
   fileSize: number
   status: 'UPLOADED' | 'EXTRACTED' | 'VALIDATED' | 'FAILED'
+  projectCode?: string | null
+  documentRole?: DocumentRole
   createdAt: string
   updatedAt: string
 }
@@ -59,6 +65,26 @@ export type PontoCriticoResponse = {
   impacto: string
 }
 
+export type ScopeClassification = 'IN_SCOPE' | 'OUT_SCOPE'
+
+export type ScopeComparisonItemResponse = {
+  item: string
+  classificacao: ScopeClassification
+  trechoEf: string | null
+  trechoComplementar: string | null
+  justificativa: string | null
+}
+
+export type ScopeAnalyzerSummaryResponse = {
+  classificacaoGeral: ScopeClassification
+  resumoExecutivo: string
+  principaisRiscos: string[]
+  confiancaNivel: string
+  confiancaJustificativa: string
+  recomendacoes: string[]
+  parecerFinal: string
+}
+
 export type ValidationReportResponse = {
   reportId: number
   documentId: number
@@ -73,6 +99,8 @@ export type ValidationReportResponse = {
   score: number
   classificacao: 'APROVADO' | 'ACEITAVEL' | 'REPROVADO'
   sectionAnalysis: SectionStatus[]
+  aderenciaEscopo: ScopeComparisonItemResponse[]
+  analiseScopeAnalyzer: ScopeAnalyzerSummaryResponse | null
 }
 
 export type PageResponse<T> = {
