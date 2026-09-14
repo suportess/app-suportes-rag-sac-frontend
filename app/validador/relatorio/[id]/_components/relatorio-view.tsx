@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, AlertTriangle, ArrowLeft } from 'lucide-react'
+import { AlertTriangle, ArrowLeft } from 'lucide-react'
 import { api } from '@/lib/api'
+import { LoadingState } from '@/components/ui/loading-state'
 import type { ValidationReportResponse } from '@/lib/types'
 import { ReportDisplay } from '@/app/validador/_components/report-display'
 
@@ -52,11 +53,7 @@ export function RelatorioView({ reportId }: RelatorioViewProps) {
       </div>
 
       {/* Loading */}
-      {loading && (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
-          <Loader2 size={36} className="animate-spin" style={{ color: 'var(--clr-brand)' }} />
-        </div>
-      )}
+      {loading && <LoadingState message="Carregando relatório..." />}
 
       {/* Error */}
       {error && !loading && (

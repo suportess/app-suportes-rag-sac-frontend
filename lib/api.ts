@@ -1,7 +1,8 @@
+import type { DocumentUploadResponse } from './types'
+
 const BASE_URL = '/api/proxy'
 
 type UploadOptions = {
-  documentosComplementares?: File | File[]
   complementaryDocumentIds?: number[]
   projectCode?: string
 }
@@ -36,33 +37,30 @@ export const api = {
             : undefined,
     }),
 
-  upload: <T>(path: string, efFile: File, payload?: File | File[] | UploadOptions) => {
+  upload: <T>(path: string, efFile: File, options?: UploadOptions) => {
     const form = new FormData()
-
-    const normalized: UploadOptions =
-      payload instanceof File || Array.isArray(payload)
-        ? { documentosComplementares: payload as File | File[] }
-        : (payload ?? {})
-
-    const documentos = Array.isArray(normalized.documentosComplementares)
-      ? normalized.documentosComplementares
-      : normalized.documentosComplementares
-        ? [normalized.documentosComplementares]
-        : []
-
     form.append('EF', efFile)
 
-    if (normalized.projectCode?.trim()) {
-      form.append('projectCode', normalized.projectCode.trim())
+    if (options?.projectCode?.trim()) {
+      form.append('projectCode', options.projectCode.trim())
     }
 
-    normalized.complementaryDocumentIds?.forEach((id) => {
+    options?.complementaryDocumentIds?.forEach((id) => {
       form.append('complementaryDocumentIds', String(id))
     })
 
-    documentos.forEach((documento) => {
-      form.append('documentosComplementares', documento)
-    })
     return request<T>(path, { method: 'POST', body: form })
+  },
+
+  uploadComplementary: (file: File, projectCode?: string) => {
+    const form = new FormData()
+    form.append('file', file)
+    if (projectCode?.trim()) {
+      form.append('projectCode', projectCode.trim())
+    }
+    return request<DocumentUploadResponse>('/api/v1/documents/complementary-documents', {
+      method: 'POST',
+      body: form,
+    })
   },
 }

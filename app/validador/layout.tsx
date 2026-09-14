@@ -10,7 +10,7 @@ export default function ValidadorLayout({ children }: { children: React.ReactNod
       <div className="flex min-h-screen" style={{ background: 'var(--bg-base)' }}>
         <Sidebar />
         {/* Desktop: offset by sidebar width. Mobile: full width (sidebar is overlay). */}
-        <div className="flex-1 flex flex-col md:ml-[15rem]">
+        <div className="flex-1 flex flex-col md:ml-[13.5rem]">
           <Topbar />
           <main>{children}</main>
         </div>

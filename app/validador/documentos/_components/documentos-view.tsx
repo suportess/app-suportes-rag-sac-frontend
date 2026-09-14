@@ -14,6 +14,8 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { api } from '@/lib/api'
+import { Badge, type BadgeTone } from '@/components/ui/badge'
+import { LoadingState } from '@/components/ui/loading-state'
 import type {
   DocumentResponse,
   PageResponse,
@@ -32,16 +34,16 @@ function formatDate(iso: string): string {
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-function statusBadgeClass(status: DocumentResponse['status']): string {
+function statusBadgeTone(status: DocumentResponse['status']): BadgeTone {
   switch (status) {
     case 'UPLOADED':
-      return 'badge-info'
+      return 'info'
     case 'EXTRACTED':
-      return 'badge-purple'
+      return 'purple'
     case 'VALIDATED':
-      return 'badge-success'
+      return 'success'
     case 'FAILED':
-      return 'badge-danger'
+      return 'danger'
   }
 }
 
@@ -123,11 +125,7 @@ export function DocumentosView() {
       </div>
 
       {/* Loading */}
-      {loading && (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
-          <Loader2 size={36} className="animate-spin" style={{ color: 'var(--clr-brand)' }} />
-        </div>
-      )}
+      {loading && <LoadingState message="Carregando documentos..." />}
 
       {/* Error */}
       {error && !loading && (
@@ -199,9 +197,9 @@ export function DocumentosView() {
                     <td>{doc.documentType}</td>
                     <td>{formatFileSize(doc.fileSize)}</td>
                     <td>
-                      <span className={statusBadgeClass(doc.status)}>
+                      <Badge tone={statusBadgeTone(doc.status)}>
                         {statusLabel(doc.status)}
-                      </span>
+                      </Badge>
                     </td>
                     <td style={{ whiteSpace: 'nowrap' }}>{formatDate(doc.createdAt)}</td>
                     <td>

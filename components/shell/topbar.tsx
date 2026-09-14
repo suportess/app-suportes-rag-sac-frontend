@@ -8,46 +8,32 @@ export function Topbar() {
 
   return (
     <header
-      className="sticky top-0 z-30 flex items-center gap-3 px-4 border-b flex-shrink-0"
+      className="md:hidden sticky top-0 z-30 flex items-center gap-3 px-4 border-b flex-shrink-0"
       style={{
-        height: '3.5rem',
+        height: '2.75rem',
         background: 'var(--d2b-topbar-bg)',
         borderColor: 'var(--d2b-border)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
       }}
     >
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="md:hidden p-2 rounded-lg transition-colors flex-shrink-0"
-        style={{ color: 'var(--d2b-text-secondary)' }}
-        aria-label="Abrir menu"
-      >
-        <Menu size={18} />
-      </button>
-
-      {/* App title */}
-      <div className="flex items-center gap-2 flex-1 min-w-0">
+      {/* So existe no mobile (onde a sidebar vira drawer) - em desktop nao ha conteudo de
+          header ainda (reservado pra acoes futuras: perfil/config/ajuda/ambiente), entao o
+          header inteiro fica oculto em vez de mostrar uma barra vazia com linha divisoria. */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setOpen(true)}
+          className="p-2 rounded-lg transition-colors flex-shrink-0"
+          style={{ color: 'var(--d2b-text-secondary)' }}
+          aria-label="Abrir menu"
+        >
+          <Menu size={18} />
+        </button>
         <ShieldCheck
-          size={18}
-          className="flex-shrink-0 md:hidden"
+          size={16}
+          className="flex-shrink-0"
           style={{ color: 'var(--brand)' }}
         />
-        <div className="min-w-0">
-          <h1
-            className="text-sm font-semibold truncate"
-            style={{ color: 'var(--d2b-text-primary)' }}
-          >
-            EF Quality Check
-          </h1>
-          <p
-            className="text-[10px] truncate hidden sm:block"
-            style={{ color: 'var(--d2b-text-muted)' }}
-          >
-            Validador de Especificações Funcionais
-          </p>
-        </div>
       </div>
     </header>
   )
