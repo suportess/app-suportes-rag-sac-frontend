@@ -230,6 +230,16 @@ export function ValidadorView() {
       const selected = Array.from(e.target.files ?? [])
       if (selected.length === 0) return
 
+      // Decisao de produto (2026-09-15): 1 EF aceita no maximo 1 documento complementar, seja do
+      // historico ou novo upload - os dois compartilham a mesma "vaga".
+      if (selectedHistoryDocumentIds.length + newComplementaryUploads.length >= 1) {
+        toast.error('Só é permitido 1 documento complementar. Remova o já selecionado antes de adicionar outro.')
+        if (complementaryInputRef.current) {
+          complementaryInputRef.current.value = ''
+        }
+        return
+      }
+
       // Checagem otimista client-side (evita round-trip quando o nome ja esta visivel na tela) -
       // so cobre o que esta carregado agora (historico e paginado/buscado, nao é mais a lista
       // inteira). A garantia de verdade é no backend (DocumentService.uploadComplementary), que
@@ -264,7 +274,7 @@ export function ValidadorView() {
         complementaryInputRef.current.value = ''
       }
     },
-    [historyDocuments, newComplementaryUploads, uploadOneComplementary]
+    [historyDocuments, newComplementaryUploads, selectedHistoryDocumentIds, uploadOneComplementary]
   )
 
   const removeComplementaryUpload = useCallback((id: string) => {
@@ -280,11 +290,22 @@ export function ValidadorView() {
     [newComplementaryUploads, uploadOneComplementary]
   )
 
-  const toggleHistoryDocument = useCallback((id: number) => {
-    setSelectedHistoryDocumentIds((prev) =>
-      prev.includes(id) ? prev.filter((docId) => docId !== id) : [...prev, id]
-    )
-  }, [])
+  const toggleHistoryDocument = useCallback(
+    (id: number) => {
+      setSelectedHistoryDocumentIds((prev) => {
+        if (prev.includes(id)) {
+          return []
+        }
+        // Mesma "vaga" compartilhada com upload de arquivo novo - ver handleComplementaryInputChange.
+        if (newComplementaryUploads.length > 0) {
+          toast.error('Só é permitido 1 documento complementar. Remova o já selecionado antes de escolher outro do histórico.')
+          return prev
+        }
+        return [id]
+      })
+    },
+    [newComplementaryUploads]
+  )
 
   const openHistoryDropdown = useCallback(() => {
     setHistoryOpen(true)
@@ -335,7 +356,7 @@ export function ValidadorView() {
           <div>
             <h1 className="page-title">Validar Especificação Funcional</h1>
             <p className="page-subtitle">
-              Envie uma EF para validar sua qualidade e, opcionalmente, documentos complementares para
+              Envie uma EF para validar sua qualidade e, opcionalmente, um documento complementar para
               analisar aderência ao escopo.
             </p>
           </div>
@@ -359,14 +380,13 @@ export function ValidadorView() {
           ref={complementaryInputRef}
           type="file"
           accept=".pdf,.docx,.ppt,.pptx"
-          multiple
           onChange={handleComplementaryInputChange}
           style={{ display: 'none' }}
         />
 
         <SectionCard
           icon={<FileCheck2 size={18} />}
-          title="Especificação Funcional (EF)"
+          title="Especificação Funcional"
           badge={<Badge tone="brand">Obrigatório</Badge>}
         >
           {!efFile ? (
@@ -391,11 +411,11 @@ export function ValidadorView() {
 
         <SectionCard
           icon={<FileText size={18} />}
-          title="Documentos complementares"
+          title="Documento complementar"
           badge={<Badge tone="muted">Opcional</Badge>}
         >
           <p className="helper-text" style={{ margin: '0 0 0.65rem' }}>
-            Selecione um ou mais documentos já carregados no histórico e/ou anexe novos arquivos do computador.
+            Selecione 1 documento da lista ou anexe um novo.
           </p>
 
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
@@ -432,8 +452,8 @@ export function ValidadorView() {
                   }}
                 >
                   {selectedHistoryDocumentIds.length > 0
-                    ? `${selectedHistoryDocumentIds.length} documento(s) selecionado(s)`
-                    : 'Selecione um ou mais documentos existentes...'}
+                    ? '1 documento selecionado'
+                    : 'Selecione um documento existente...'}
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginLeft: '0.75rem' }}>
                   {selectedHistoryDocumentIds.length > 0 && (
@@ -610,7 +630,7 @@ export function ValidadorView() {
           {newComplementaryUploads.length > 0 && (
             <div style={{ marginTop: '0.9rem' }}>
               <p style={{ margin: '0 0 0.5rem', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
-                Documentos selecionados
+                Documento selecionado
               </p>
               <div style={{ display: 'grid', gap: '0.45rem' }}>
                 {newComplementaryUploads.map((item) => (
@@ -674,7 +694,7 @@ export function ValidadorView() {
       {loading && (
         <LoadingState
           message="Analisando especificação..."
-          helperText="Isso pode levar alguns minutos quando documentos complementares são utilizados."
+          helperText="Isso pode levar alguns minutos, principalmente com documento complementar anexado."
           compact
         />
       )}

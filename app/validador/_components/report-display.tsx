@@ -649,6 +649,25 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           value={report.pontosCriticos.length}
           label="Pontos críticos"
         />
+        {report.aderenciaEscopo.length === 0 ? (
+          <MetricCard
+            icon={<Inbox size={22} />}
+            iconColor="var(--text-muted)"
+            value={<Badge tone="muted">Não analisada</Badge>}
+            label="Aderência ao escopo"
+          />
+        ) : (
+          <MetricCard
+            icon={<ScopeClassificacaoIcon classificacao={report.analiseScopeAnalyzer!.classificacaoGeral} />}
+            iconColor="var(--brand)"
+            value={
+              <Badge tone={scopeClassificacaoTone(report.analiseScopeAnalyzer!.classificacaoGeral)}>
+                {scopeClassificacaoLabel(report.analiseScopeAnalyzer!.classificacaoGeral)}
+              </Badge>
+            }
+            label="Aderência ao escopo"
+          />
+        )}
       </div>
 
       <ReportTabs tabs={tabs} />
